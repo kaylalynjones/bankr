@@ -8,7 +8,7 @@ var Transfer  = require('../../app/models/transfer');
 var dbConnect = require('../../app/lib/mongodb');
 var cp        = require('child_process');
 var db        = 'bankr-test';
-//var Mongo     = require('mongodb');
+var Mongo     = require('mongodb');
 
 describe('Transfer', function(){
   before(function(done){
@@ -25,15 +25,12 @@ describe('Transfer', function(){
 
   describe('constructor', function(){
     it('should create a new transfer', function(){
-      var obj = {amount:'50', /*toAccountId: Mongo.ObjectId().toString(), */
-                  /*fromAccountId: Mongo.ObjectId().toString(), */
-                  date: '2014-8-8', fee: '25'};
+      var obj = {amount:'50', date: '2014-8-8', fee: '25'};
       var t = new Transfer(obj);
 
       expect(t).to.be.okay;
       expect(t).to.be.instanceof(Transfer);
       expect(t.amount).to.equal(50.00);
-      /*expect(t.toAccountId).to.be.instanceof(Mongo.ObjectID);*/
       expect(t.fee).to.equal(25);
     });
   });
