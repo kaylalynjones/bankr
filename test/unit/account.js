@@ -1,7 +1,7 @@
 /* jshint expr:true */
 /* global describe, it, before, beforeEach */
 
-/*'use strict';
+'use strict';
 
 var expect    = require('chai').expect;
 var Transfer  = require('../../app/models/transfer');
@@ -23,6 +23,6 @@ describe('Account', function(){
     });
   });
 
-});*/
+});
 
 
