@@ -12,7 +12,7 @@ function Transfer(obj){
 
 Object.defineProperty(Transfer, 'collection',{
   get: function(){
-    return global.mongodb.collection('transfer');
+    return global.mongodb.collection('transfers');
   }
 });
 
@@ -23,4 +23,18 @@ Transfer.create = function(obj, cb){
     cb(transfer);
   });
 };
+
+Transfer.findById = function(accountId, cb) {
+  Transfer.collection.find({
+    $or: [
+      {
+        toAccountId: new Mongo.ObjectID(accountId)
+      },
+      {
+        fromAccountId: new Mongo.ObjectID(accountId)
+      }
+    ]
+  }).toArray(cb);
+};
+
 module.exports = Transfer;
