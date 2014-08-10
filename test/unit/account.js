@@ -9,6 +9,8 @@ var dbConnect = require('../../app/lib/mongodb');
 var cp        = require('child_process');
 var db        = 'bankr-test';
 var Mongo     = require('mongodb');
+var Transaction = require('../../app/models/account');
+var Transfer = require('../../app/models/transfer');
 
 describe('Account', function(){
   before(function(done){
@@ -35,7 +37,7 @@ describe('Account', function(){
       expect(a.balance).to.equal(500.00);
       expect(a.initDeposit).to.equal(1000.00);
       expect(a.color).to.equal('lightblue');
-      expect(a.pin).to.equal(3456);
+      expect(a.pin).to.equal('3456');
       expect(a.photo).to.equal('http://google.com');
       expect(a.dateCreated).to.be.instanceof(Date);
     });
@@ -65,7 +67,78 @@ describe('Account', function(){
     });
   });
   
-  
+  describe('.findAll', function(){
+    it('should find all the accounts in the database', function(done){
+      Account.findAll(function(accounts){
+        expect(accounts).to.not.be.a('null');
+        expect(accounts).to.have.length.gt(0);
+        done();
+      });
+    });
+  });
+
+  describe('#validatePin', function(){
+    it('should validate the pin number', function(done){
+      var id = '53e5659ee1eb2778810b9d4a';
+      var pin = '9505';
+      Account.findById(id, function(account){
+        expect(account.pin).to.equal(pin);
+        expect(account.validatePin(pin)).to.be.true;
+        done();
+      });
+    });
+    it('should validate the pin number', function(done){
+      var id = '53e5659ee1eb2778810b9d4b';
+      var pin = '9505';
+      Account.findById(id, function(account){
+        expect(account.validatePin(pin)).to.be.false;
+        done();
+      });
+    });
+  });
+
+  describe('#deposit', function(){
+    it('should allow accountholder to deposit money into account', function(done){
+      var id = '53e5659ee1eb2778810b9d4a';
+      Account.findById(id, function(account){
+        var initbalance = account.balance;
+        var deposit = 100;
+        account.deposit(deposit, function(cb){
+          expect(account.balance).to.equal(deposit + initbalance);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('#withdraw', function(){
+    it('should make a withdrawl from an account', function(done){
+      var id = '53e5659ee1eb2778810b9d4a';
+      Account.findById(id, function(account){
+        var initbalance = account.balance;
+        var withdrawl = 100;
+        account.withdraw(withdrawl, function(transaction){
+          expect(account.balance).to.equal(initbalance - withdrawl);
+          expect(transaction.fee).to.equal(0);
+          done();
+        });
+      });
+    });
+    it('should make a withdrawl from an account and add a od fee', function(done){
+      var id = '53e5659ee1eb2778810b9d4a';
+      Account.findById(id, function(account){
+        var initbalance = account.balance;
+        var withdrawl = 7600;
+        account.withdraw(withdrawl, function(transaction){
+          expect(account.balance).to.equal(initbalance - (withdrawl+50));
+          expect(transaction.fee).to.equal(50);
+          done();
+        });
+      });
+    });
+
+  });
+
 });
 
 
