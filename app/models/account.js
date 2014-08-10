@@ -32,8 +32,14 @@ Account.prototype.create = function(cb){
 Account.findById = function(id, cb){
   var _id = Mongo.ObjectID(id);
   Account.collection.findOne({_id:_id}, function(err, result){
-    var account = changePrototype(result);
-    cb(account);
+    Transaction.findByAccountId(id, function(transactions){
+      Transfer.findByAccountId(id, function(transfers){
+        var account = changePrototype(result);
+        account.transactions = transactions;
+        account.transfers = transfers;
+        cb(account);
+      });
+    });
   });
 };
 
@@ -75,7 +81,7 @@ Account.prototype.withdraw = function(withdrawl, cb){
     Transaction.create(a, cb);
   } else {
     this.balance -= withdrawl + 50;
-   var b = {
+    var b = {
       date: new Date(),
       accountId: this._id.toString(),
       fee: 50,
@@ -84,6 +90,33 @@ Account.prototype.withdraw = function(withdrawl, cb){
     };
     Transaction.create(b, cb);
   }
+};
+
+Account.transfer = function(id1, id2, amount, cb){
+  Account.findById(id1, function(account1){
+    if(account1.balance >= (amount+25)){
+      Account.findById(id2, function(account2){
+
+        var transfer = Transfer.create({
+          amount: amount,
+          date: new Date(),
+          toAccountId: id2,
+          fromAccountId: id1,
+          fee: 25
+        }, function(transfer){
+          account1.balance -= amount + 25;
+          account2.balance += amount;
+          account1.create(function(){
+            account2.create(function(){
+              cb(transfer);
+            });
+          });
+        });
+      });
+    } else {
+      cb(null);
+    }
+  });
 };
 
 //private function

@@ -26,15 +26,23 @@ Transfer.create = function(obj, cb){
 
 Transfer.findByAccountId = function(accountId, cb) {
   Transfer.collection.find({
-    $or: [
-      {
-        toAccountId: Mongo.ObjectID(accountId)
-      },
-      {
-        fromAccountId: Mongo.ObjectID(accountId)
-      }
-    ]
-  }).toArray(cb);
+    $query: {
+      $or: [
+        {
+          toAccountId: Mongo.ObjectID(accountId)
+        },
+        {
+          fromAccountId: Mongo.ObjectID(accountId)
+        }
+      ]
+    },
+    $orderby: {
+      date: -1
+    }
+  }).toArray(function(err, result){
+    cb(result);
+  });
 };
+
 
 module.exports = Transfer;

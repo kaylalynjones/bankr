@@ -24,7 +24,14 @@ Transaction.create = function(obj, cb){
 };
 
 Transaction.findByAccountId = function(accountId, cb){
-  Transaction.collection.find({accountId: Mongo.ObjectID(accountId)}).toArray(cb);
+  Transaction.collection.find({
+    $query: {
+      accountId: Mongo.ObjectID(accountId)
+    },
+    $orderby:{ date: -1 }
+  }).toArray(function(err, result){
+    cb(result);
+  });
 };
 
 module.exports = Transaction;

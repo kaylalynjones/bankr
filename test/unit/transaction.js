@@ -55,7 +55,7 @@ describe('Transaction', function(){
   describe('.findByAccountId', function(){
     it('should find transactions by the AccountId', function(done){
       var accountId = '53e5659ee1eb2778810b9d4a';
-      Transaction.findByAccountId(accountId, function(err, transactions){
+      Transaction.findByAccountId(accountId, function(transactions){
         expect(transactions).to.have.length.gt(0);
         done();
       });

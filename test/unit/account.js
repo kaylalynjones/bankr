@@ -28,9 +28,9 @@ describe('Account', function(){
   describe('constructor', function(){
     it('should create a new account', function(){
       var obj = {name:'Juanita Irvin',  photo:'http://google.com', accountType: 'savings', color:'lightblue',
-                 dateCreated:'2012-04-15', pin:'3456', initDeposit:'1000', balance:'500'};
+        dateCreated:'2012-04-15', pin:'3456', initDeposit:'1000', balance:'500'};
       var a = new Account(obj);
-      
+
       expect(a).to.be.okay;
       expect(a).to.be.instanceof(Account);
       expect(a.accountType).to.equal('savings');
@@ -42,11 +42,11 @@ describe('Account', function(){
       expect(a.dateCreated).to.be.instanceof(Date);
     });
   });
-  
+
   describe('#create', function(){
     it('should create a new account and save it to the database', function(done){
       var obj = {name:'Juanita Irvin',  photo:'http://google.com', accountType: 'savings', color:'lightblue',
-                 dateCreated:'2012-04-15', pin:'3456', initDeposit:'1000', balance:'500'};
+        dateCreated:'2012-04-15', pin:'3456', initDeposit:'1000', balance:'500'};
       var account = new Account(obj);
 
       account.create(function(result){
@@ -61,12 +61,16 @@ describe('Account', function(){
     it('should find an account', function(done){
       var accountId = '53e5659ee1eb2778810b9d4a';
       Account.findById(accountId, function(account){
+        expect(account.transactions).to.not.be.a('null');
+        expect(account.transactions).to.have.length.gt(1);
+        expect(account.transfers).to.not.be.a('null');
+        expect(account.transfers).to.have.length.gt(1);
         expect(account).to.be.instanceof(Account);
         done();
       });
     });
   });
-  
+
   describe('.findAll', function(){
     it('should find all the accounts in the database', function(done){
       Account.findAll(function(accounts){
@@ -87,7 +91,7 @@ describe('Account', function(){
         done();
       });
     });
-    it('should validate the pin number', function(done){
+    it('stop invalid pin numbers', function(done){
       var id = '53e5659ee1eb2778810b9d4b';
       var pin = '9505';
       Account.findById(id, function(account){
@@ -136,9 +140,49 @@ describe('Account', function(){
         });
       });
     });
-
+  });
+  describe('.transfer', function(){
+    it('should transfer money from one acct to another, and charge fee', function(done){
+      var id1 = '53e5659ee1eb2778810b9d4a';
+      var id2 = '53e5659ee1eb2778810b9d4b';
+      var amount = 100;
+      Account.findById(id1, function(before1){
+        Account.findById(id2, function(before2){
+          Account.transfer(id1, id2, amount, function(transfer){
+            Account.findById(id1, function(after1){
+              Account.findById(id2, function(after2){
+                expect(transfer).to.not.be.a('null');
+                expect(after1.balance).to.be.lt(before1.balance);
+                expect(after2.balance).to.be.gt(before2.balance);
+                expect(transfer.fee).to.equal(25);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+    it('should not transfer money from one acct to another, insuficient funds', function(done){
+      var id1 = '53e5659ee1eb2778810b9d4a';
+      var id2 = '53e5659ee1eb2778810b9d4b';
+      var amount = 10000;
+      Account.findById(id1, function(before1){
+        Account.findById(id2, function(before2){
+          Account.transfer(id1, id2, amount, function(transfer){
+            Account.findById(id1, function(after1){
+              Account.findById(id2, function(after2){
+                expect(after1.balance).to.equal(before1.balance);
+                expect(after2.balance).to.equal(after2.balance);
+                expect(transfer).to.be.null;
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
   });
 
-});
+});//last one
 
 
