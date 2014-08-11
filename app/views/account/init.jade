@@ -1,4 +1,15 @@
 extends ../shared/template
 block content
-  h1 I am the init page! /accounts/new
 
+  h1 Open a New Account!
+  form(method='post' action='/accounts/new')
+    input(name='name' type='text' placeholder='Jim Bean' autofocus=true)
+    br
+    input(name='color' type='color')
+    input(name='photo' type='text' placeholder='Picture of You')
+    input(name='pin' type='text' placeholder='1234')
+    select(name='accountType')
+      option(value='checking') Checkings
+      option(value='savings') Savings
+    input(name= 'initdeposit' type='number' pattern='^(?!0\.00)\d{1,3}(,\d{3})*(\.\d\d)?$')
+    input(type='submit' value='Open Account')

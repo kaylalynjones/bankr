@@ -57,42 +57,41 @@ Account.prototype.validatePin = function(pin){
 };
 
 Account.prototype.deposit = function(deposit, cb){
+  deposit = parseFloat(deposit);
   this.balance += deposit;
   var t = {
     date: new Date(),
     accountId: this._id.toString(),
     fee: 0,
-    type: this.type,
-    amount: this.deposit
+    type: 'deposit',
+    amount: deposit
   };
-  Transaction.create(t, cb);
+  this.create(function(){
+    Transaction.create(t, cb);
+  });
 };
 
 Account.prototype.withdraw = function(withdrawl, cb){
-  if(this.balance >= withdrawl){
-    this.balance -= withdrawl;
-    var a = {
-      date: new Date(),
-      accountId: this._id.toString(),
-      fee: 0,
-      type: this.type,
-      amount: this.withdrawl
-    };
-    Transaction.create(a, cb);
-  } else {
-    this.balance -= withdrawl + 50;
-    var b = {
-      date: new Date(),
-      accountId: this._id.toString(),
-      fee: 50,
-      type: this.type,
-      amount: this.withdrawl
-    };
-    Transaction.create(b, cb);
+  withdrawl = parseFloat(withdrawl);
+  var fee = 0;
+  if(this.balance <= withdrawl){
+    fee = 50;
   }
+  this.balance -= withdrawl;
+  var a = {
+    date: new Date(),
+    accountId: this._id.toString(),
+    fee: fee,
+    type: 'withdrawal',
+    amount: withdrawl
+  };
+  this.create(function(){
+    Transaction.create(a, cb);
+  });
 };
 
 Account.transfer = function(id1, id2, amount, cb){
+  amount = parseInt(amount);
   Account.findById(id1, function(account1){
     if(account1.balance >= (amount+25)){
       Account.findById(id2, function(account2){

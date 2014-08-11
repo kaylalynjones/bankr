@@ -39,8 +39,8 @@ Transfer.findByAccountId = function(accountId, cb) {
     $orderby: {
       date: -1
     }
-  }).toArray(function(err, result){
-    cb(result);
+  }).toArray(function(err, results){
+    cb(results);
   });
 };
 

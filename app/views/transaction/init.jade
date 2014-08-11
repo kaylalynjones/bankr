@@ -1,13 +1,16 @@
 extends ../shared/template
 block content
 
-doctype html
-html
-  head
-    meta(charset='utf-8')
-    title BankR
-    style(rel='stylesheet' href='css/style.css')
-      body
-        h1 I am the transaction page! /accounts/:id/transaction
+  h1 New Transaction
+  form(method='post' action='/accounts/'+ account._id +'/transaction')
+    label
+      input(type='radio' name='type' value='deposit') 
+      | Deposit
+    label
+      input(type='radio' name='type' value='withdrawal') 
+      | Withdrawal
+    input(name= 'amount' type='number' pattern='^(?!0\.00)\d{1,3}(,\d{3})*(\.\d\d)?$')
+    input(name= 'pin' type='text' placeholder='1234')
+    input(type='submit' value='Confirm')
 
 

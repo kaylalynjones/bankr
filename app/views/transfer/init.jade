@@ -1,13 +1,13 @@
 extends ../shared/template
 block content
-  
-doctype html
-html
-  head
-    meta(charset='utf-8')
-    title BankR
-    style(rel='stylesheet' href='css/style.css')
-      body
-        h1 I am the transfer page! /accounts/:id/transfer
-
-
+  body
+    h1 Make a Transfer
+    form(method='post' action='/accounts/:id/transfer')
+      input(type='hidden' name='fromAccountId' value=fromAccount._id)
+      p From #{fromAccount.name}
+      select(name='toAccountId')
+        each toAccount in otherAccounts
+          option(value=toAccount._id)= toAccount.name
+      input(name= 'amount' type='number' pattern='^(?!0\.00)\d{1,3}(,\d{3})*(\.\d\d)?$')
+      input(name= 'pin' type='text' placeholder='1234')
+      input(type='submit' value='Confirm')

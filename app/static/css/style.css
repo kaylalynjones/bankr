@@ -1,0 +1,3 @@
+input:not([type=radio]), select {
+  display: block;
+}

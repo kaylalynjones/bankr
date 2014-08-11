@@ -9,9 +9,9 @@ block content
       th Opened
     tbody
       each account in accounts
-        tr
+        tr(style='background-color: #{account.color};')
           td: a(href='/accounts/'+ account._id)= account.name
-          td= account.balance
-          td= account.type
-          td= account.dateCreated
+          td $#{account.balance.toFixed(2)}
+          td= account.accountType
+          td= moment(account.dateCreated).format('ll')
 
