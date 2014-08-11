@@ -4,7 +4,7 @@ var Mongo = require('mongodb');
 
 function Transfer(obj){
   this.amount        = parseInt(obj.amount);
-  this.date          = new Date(obj.date);
+  this.date          = new Date();
   this.toAccountId   = Mongo.ObjectID(obj.toAccountId);
   this.fromAccountId = Mongo.ObjectID(obj.fromAccountId);
   this.fee           = parseFloat(obj.fee);
@@ -18,7 +18,6 @@ Object.defineProperty(Transfer, 'collection',{
 
 Transfer.create = function(obj, cb){
   var transfer = new Transfer(obj);
-  
   Transfer.collection.save(transfer, function(){
     cb(transfer);
   });

@@ -1,7 +1,7 @@
 extends ../shared/template
 block content
 
-  table
+  table.listView
     thead
       th Name
       th Balance
@@ -13,5 +13,5 @@ block content
           td: a(href='/accounts/'+ account._id)= account.name
           td $#{account.balance.toFixed(2)}
           td= account.accountType
-          td= moment(account.dateCreated).format('ll')
+          td= moment(account.dateCreated).format('YYYY-MM-DD@hh:mm:ss')
 

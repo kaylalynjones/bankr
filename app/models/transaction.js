@@ -3,7 +3,7 @@
 var Mongo = require('mongodb');
 
 function Transaction(obj){
-  this.date          = new Date(obj.date);
+  this.date          = new Date();
   this.accountId     = Mongo.ObjectID(obj.accountId);
   this.fee           = parseFloat(obj.fee);
   this.amount        = parseFloat(obj.amount);

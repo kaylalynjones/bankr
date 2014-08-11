@@ -18,7 +18,7 @@ block content
         - var color = transaction.type.trim() === 'deposit' ? 'lightblue' : 'hotpink';
         tr(style='background-color: #{color};')
           td= transaction._id
-          td= moment(transaction.date).format('ll')
+          td= moment(transaction.date).format('YYYY-MM-DD@hh:mm:ss')
           td= transaction.type
           td $#{transaction.amount.toFixed(2)}
           td= transaction.fee
@@ -35,7 +35,7 @@ block content
         - var color = transfer.fromAccountId.toString() === account._id.toString() ? 'green' : 'yellow';
         tr(style='background-color: #{color};')
           td= transfer._id
-          td= moment(transfer.date).format('ll')
+          td= moment(transfer.date).format('YYYY-MM-DD@hh:mm:ss')
           td= transfer.fromAccountId
           td= transfer.toAccountId
           td $#{transfer.amount.toFixed(2)}

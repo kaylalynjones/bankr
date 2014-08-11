@@ -10,10 +10,10 @@ function Account(obj){
   this.photo       = obj.photo;
   this.accountType = obj.accountType;
   this.color       = obj.color;
-  this.dateCreated = new Date(obj.dateCreated);
+  this.dateCreated = new Date();
   this.pin         = obj.pin;
-  this.initDeposit = parseFloat(obj.initDeposit);
-  this.balance     = parseFloat(obj.balance);
+  this.initDeposit = obj.initDeposit * 1;
+  this.balance     = obj.balance * 1;
 
 }
 Object.defineProperty(Account, 'collection',{
@@ -53,12 +53,12 @@ Account.findAll = function(cb){
 };
 
 Account.prototype.validatePin = function(pin){
+ // if(pin !== this.pin){cb(); return;}
   return pin === this.pin;
 };
 
 Account.prototype.deposit = function(deposit, cb){
-  deposit = parseFloat(deposit);
-  this.balance += deposit;
+  this.balance += parseFloat(deposit);
   var t = {
     date: new Date(),
     accountId: this._id.toString(),
@@ -66,6 +66,7 @@ Account.prototype.deposit = function(deposit, cb){
     type: 'deposit',
     amount: deposit
   };
+//??
   this.create(function(){
     Transaction.create(t, cb);
   });
@@ -85,6 +86,7 @@ Account.prototype.withdraw = function(withdrawl, cb){
     type: 'withdrawal',
     amount: withdrawl
   };
+//??
   this.create(function(){
     Transaction.create(a, cb);
   });
@@ -114,6 +116,7 @@ Account.transfer = function(id1, id2, amount, cb){
       });
     } else {
       cb(null);
+      return;
     }
   });
 };
