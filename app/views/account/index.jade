@@ -10,7 +10,7 @@ block content
     tbody
       each account in accounts
         tr
-          td= account.name
+          td: a(href='/accounts/'+ account._id)= account.name
           td= account.balance
           td= account.type
           td= account.dateCreated

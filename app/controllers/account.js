@@ -22,9 +22,6 @@ exports.index = function(req,res){
 
 exports.show = function(req,res){
   Account.findById(req.params.id, function(account){
-    
-    });
+    res.render('account/show', {account:account});
   });
 };
-
-
